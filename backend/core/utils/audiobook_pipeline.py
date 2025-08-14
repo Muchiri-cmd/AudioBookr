@@ -1,7 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from parser import extract_text, clean_text, to_chunks
-from tts import synth_piper, concat_wavs_to_mp3
+from core.utils.parser import extract_text, clean_text, to_chunks
+from core.utils.tts import synth_piper, concat_wavs_to_mp3
 
 def process_file_to_mp3(file_path, output_dir, voice_model, piper_exe, piper_model_dir,
                         chunk_size=300, max_workers=4):
