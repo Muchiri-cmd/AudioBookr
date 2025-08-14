@@ -1,13 +1,14 @@
 import os, subprocess
 from typing import Optional
-from django.conf import settings
 import soundfile as sf
 import numpy as np
 
 #converts a chunk of text to WAV using Piper.
-def synth_piper(text: str, model_filename: str, out_wav: str, length_scale: float=1.0):
-    exe = settings.PIPER_EXE
-    model_path = os.path.join(settings.PIPER_MODELS_DIR, model_filename) 
+def synth_piper(text: str, model_filename: str, out_wav: str,
+                piper_exe: str, piper_model_dir: str, length_scale: float=1.0) -> None:
+    
+    exe = piper_exe
+    model_path = os.path.join(piper_model_dir, model_filename)
     
     if not os.path.exists(exe):
         raise FileNotFoundError(f"Piper executable not found at {exe}")
