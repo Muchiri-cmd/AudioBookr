@@ -1,0 +1,25 @@
+# Core web framework
+Django==5.2.5                 # Main web framework
+djangorestframework==3.16.1   # Adds REST API capabilities
+django-cors-headers==4.7.0    # Allows frontend to talk to backend
+
+# Document processing libraries
+EbookLib==0.19                # For reading EPUB files
+pdfminer.six==20250506        # For extracting text from PDFs
+pypdf==6.0.0                  # Backup PDF reader
+python-docx==1.2.0            # For reading Word documents
+beautifulsoup4==4.13.4        # For parsing HTML (in EPUB files)
+pysbd==0.3.4                  # For splitting text into sentences
+
+# Audio processing
+pydub==0.25.1                 # Audio manipulation
+soundfile==0.13.1             # Audio file reading/writing
+numpy==2.3.2                  # Mathematical operations for audio
+
+# AI/Machine Learning (for TTS)
+# torch==2.9+cpu              # PyTorch for AI models (CPU version)
+# torchaudio==2.8.0+cpu         # Audio processing for PyTorch
+
+# Utilities
+tqdm==4.67.1                  # Progress bars
+python-dotenv==1.0.0          # Environment variable management
