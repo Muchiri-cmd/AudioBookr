@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Text → MP3</title></head>
+  <body>
+    <h1>Upload text file (TXT) → MP3</h1>
+    <form action="/api/convert" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="file" accept=".pdf,.doc,.docx,.txt" required>
+      <button type="submit">Convert</button>
+    </form>
+  </body>
+</html>
