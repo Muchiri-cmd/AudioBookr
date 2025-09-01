@@ -1,0 +1,14 @@
+db.sqlite3
+migrations/
+__pycache__/
+env/
+piper
+media/
+test.py
+final_ouput.mp3
+*.docx
+downloads
+*en_US
+test.py
+*.pdf
+*.mp3

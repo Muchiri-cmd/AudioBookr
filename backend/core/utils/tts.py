@@ -37,34 +37,34 @@ def synth_piper(text: str, model_filename: str, out_wav: str,
     except Exception as e:
         raise RuntimeError(f"Piper TTS error: {str(e)}")
 
-#merges multiple WAV chunks and converts to MP
+#merges multiple WAV chunks and converts to MP3
 def concat_wavs_to_mp3(wav_paths, out_mp3_path):
     os.makedirs(os.path.dirname(out_mp3_path), exist_ok=True)
     
+    # Create temporary files
     list_file = out_mp3_path.replace('.mp3', '_list.txt')
-    with open(list_file, 'w', encoding='utf-8') as f:
-        for wav_path in wav_paths:
-            if os.path.exists(wav_path):
-                abs_path = os.path.abspath(wav_path).replace('\\', '/')
-                f.write(f"file '{abs_path}'\n")
+    temp_wav = out_mp3_path.replace('.mp3', '_temp.wav')
     
     try:
+        # Create file list for ffmpeg
+        with open(list_file, 'w', encoding='utf-8') as f:
+            for wav_path in wav_paths:
+                if os.path.exists(wav_path):
+                    abs_path = os.path.abspath(wav_path).replace('\\', '/')
+                    f.write(f"file '{abs_path}'\n")
+        
         #concatenate all wav chunks into single temporary wav
         subprocess.run([
             'ffmpeg', '-f', 'concat', '-safe', '0', 
             '-i', list_file, '-c', 'copy', 
-            out_mp3_path.replace('.mp3', '_temp.wav')
+            temp_wav
         ], check=True, capture_output=True, text=True)
         
         #convert temporary wav to mp3
         subprocess.run([
-            'ffmpeg', '-i', out_mp3_path.replace('.mp3', '_temp.wav'),
+            'ffmpeg', '-i', temp_wav,
             '-acodec', 'libmp3lame', '-ab', '128k', out_mp3_path
         ], check=True, capture_output=True, text=True)
-        
-        #clean up
-        os.remove(list_file)
-        os.remove(out_mp3_path.replace('.mp3', '_temp.wav'))
         
     except subprocess.CalledProcessError as e:
         #if ffmpeg fails, log the error and return the first wav path if it exists
@@ -77,6 +77,15 @@ def concat_wavs_to_mp3(wav_paths, out_mp3_path):
         raise RuntimeError(f"Failed to create audio output: {e.stderr}")
     except FileNotFoundError:
         raise RuntimeError("FFmpeg not found. Please install FFmpeg and add it to your PATH.")
+    finally:
+        # Always clean up temporary files
+        try:
+            if os.path.exists(list_file):
+                os.remove(list_file)
+            if os.path.exists(temp_wav):
+                os.remove(temp_wav)
+        except Exception as e:
+            print(f"Warning: Could not remove temporary files: {e}")
 
 def get_audio_duration(wav_path: str) -> float:
     try:

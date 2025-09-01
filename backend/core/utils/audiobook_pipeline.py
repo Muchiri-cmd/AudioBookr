@@ -1,4 +1,5 @@
 import os
+import glob
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from core.utils.parser import extract_text, clean_text, to_chunks
 from core.utils.tts import synth_piper, concat_wavs_to_mp3
@@ -33,4 +34,20 @@ def process_file_to_mp3(file_path, output_dir, voice_model, piper_exe, piper_mod
     out_mp3 = os.path.join(output_dir, "final_output.mp3")
     concat_wavs_to_mp3(wav_paths, out_mp3)
     
+    # Clean up temporary WAV chunks after creating final MP3
+    cleanup_chunks(output_dir)
+    
     return out_mp3
+
+def cleanup_chunks(output_dir):
+    """Remove all chunk WAV files after processing."""
+    try:
+        chunk_pattern = os.path.join(output_dir, "chunk_*.wav")
+        chunk_files = glob.glob(chunk_pattern)
+        for chunk_file in chunk_files:
+            if os.path.exists(chunk_file):
+                os.remove(chunk_file)
+                print(f"Cleaned up: {os.path.basename(chunk_file)}")
+        print(f"Cleanup completed. Kept final MP3 in: {output_dir}")
+    except Exception as e:
+        print(f"Warning: Error during cleanup: {str(e)}")
